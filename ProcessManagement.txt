@@ -1,0 +1,5 @@
+cat /proc/1/sched [Scheduler Info]
+cat /proc/1/stat
+cat /proc/1/sched
+cat /proc/1/sched
+cat /proc/1/sched

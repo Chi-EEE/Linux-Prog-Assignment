@@ -1,21 +1,20 @@
 /// <summary>
 /// Name: Chi Huu Huynh
-/// Date: 06/11/2022
+/// Date: 07/11/2022
 /// Login: C00261172
 /// </summary>
 
 #include <iostream>
 #include <string>
-#include <cstring>
 #include <unistd.h>
-#include <memory>
 
-// https://unix.stackexchange.com/a/150746
 int main()
 {
-   // Duplicates the current process
-   int pid = fork();
-   std::string processCommand = "cat /proc/" + std::to_string(pid);
+   int pid = getpid(); // Gets the current process id
+   const std::string PROCESS_COMMAND = "cat /proc/" + std::to_string(pid);
+   const std::string HEADING = "limits";
+   
+   // Executes the shell command and outputs the result
    // https://stackoverflow.com/a/29639239
-   system((processCommand + "/limits").c_str());
+   system((PROCESS_COMMAND + "/" + HEADING).c_str());
 }

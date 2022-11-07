@@ -6,9 +6,7 @@
 
 #include <iostream>
 #include <string>
-#include <cstring>
 #include <unistd.h>
-#include <memory>
 
 int main()
 {
