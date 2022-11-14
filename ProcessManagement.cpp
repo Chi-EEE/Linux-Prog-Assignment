@@ -15,6 +15,5 @@ int main()
    const std::string HEADING = "limits";
    
    // Executes the shell command and outputs the result
-   // https://stackoverflow.com/a/29639239
    system((PROCESS_COMMAND + "/" + HEADING).c_str());
 }
