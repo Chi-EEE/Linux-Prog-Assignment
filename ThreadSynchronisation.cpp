@@ -8,14 +8,27 @@
 #include <string>
 #include <pthread.h>
 #include <cstdint>
+#include <atomic>
 
-static int number = 3;
-void *hello(void *_arg)
+// Sleep Function
+#include <chrono>
+#include <thread>
+
+std::atomic<int> number{3};
+void *addition(void *_arg)
 {
-    int* data;
-    data = (int *) _arg;
-    number += *data;
-    delete data;
+    int saved_number = number;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    
+    number.fetch_add((long)_arg);
+
+    char *ret;
+    pthread_exit(ret);
+}
+void *subtraction(void *_arg)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    number.fetch_add((long)_arg);
 
     char *ret;
     pthread_exit(ret);
@@ -24,8 +37,8 @@ void *hello(void *_arg)
 int main()
 {
     pthread_t thread_1, thread_2;
-    pthread_create(&thread_1, NULL, hello, (void *)2);
-    pthread_create(&thread_2, NULL, hello, (void *)-2);
+    pthread_create(&thread_1, NULL, addition, (void *)2);
+    pthread_create(&thread_2, NULL, subtraction, (void *)-2);
     while (true)
     {
         std::cout << number << "\n";
