@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 #include <pthread.h>
-#include <atomic> // std::atomic
+#include <atomic>
 
 #include <unistd.h> // https://man7.org/linux/man-pages/man3/sleep.3.html
 
