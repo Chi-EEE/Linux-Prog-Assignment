@@ -7,18 +7,17 @@
 #include <iostream> // std::cout
 #include <string> // std::string
 #include <pthread.h> // pthread
-#include <atomic> // std::atomic
 
 #include <unistd.h> // sleep
 
-std::atomic<int> number{3}; // Global Variable
+int number = 0; // Global Variable
 void *addition(void *_arg)
 {
-    int cpuRegister1 = number;
-    // Number is added to the cpu register and there is a delay to when the adding takes place.
-    sleep(1);
-    cpuRegister1++;
-    number = cpuRegister1;
+    int count = (long)_arg;
+    while (count > 0) {
+        number += count; // Adds the count to the number
+        count--;
+    }
     std::string message = "Added: " + std::to_string(number) + "\n";
     std::cout << message;
 
@@ -28,9 +27,11 @@ void *addition(void *_arg)
 }
 void *subtraction(void *_arg)
 {
-    int cpuRegister1 = number;
-    cpuRegister1--;
-    number = cpuRegister1;
+    int count = (long)_arg;
+    while (count > 0) {
+        number -= count; // Subtracts the count to the number
+        count--;
+    }
     std::string message = "Subtracted: " + std::to_string(number) + "\n";
     std::cout << message;
 
@@ -42,14 +43,18 @@ void *subtraction(void *_arg)
 int main()
 {
     pthread_t thread1, thread2;
-    pthread_create(&thread1, NULL, addition, NULL);
-    pthread_create(&thread2, NULL, subtraction, NULL);
+
+    // Create 2 new threads
+    pthread_create(&thread1, NULL, addition, (void*) 1000000);
+    pthread_create(&thread2, NULL, subtraction, (void*) 1000000);
 
     std::string message1 = "Main Thread (Before Wait): " + std::to_string(number) + "\n";
     std::cout << message1;
+
+    // Main thread waits until both of the threads have completed
     pthread_join(thread1, NULL);
     pthread_join(thread2, NULL);
-    sleep(1);
+
     std::string message2 = "Main Thread (After Wait): " + std::to_string(number) + "\n";
     std::cout << message2;
     return 0;
