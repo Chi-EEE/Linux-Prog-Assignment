@@ -10,17 +10,23 @@
 
 #include <unistd.h> // sleep
 
-int number = 0; // Global Variable
+pthread_mutex_t mutexLock1; // Mutex Lock
+pthread_mutex_t mutexLock2; // Mutex Lock
+int number = 0;             // Global Variable
 void *addition(void *_arg)
 {
+    pthread_mutex_lock(&mutexLock1);
     int count = (long)_arg;
     while (count > 0)
     {
         number += count; // Adds the count to the number
         count--;
     }
+    pthread_mutex_lock(&mutexLock2);
     std::string message = "Added: " + std::to_string(number) + "\n";
     std::cout << message;
+    pthread_mutex_unlock(&mutexLock1);
+    pthread_mutex_unlock(&mutexLock2);
 
     // Without this, vscode sends an warning
     char *retval;
@@ -28,14 +34,18 @@ void *addition(void *_arg)
 }
 void *subtraction(void *_arg)
 {
+    pthread_mutex_lock(&mutexLock2);
     int count = (long)_arg;
     while (count > 0)
     {
         number -= count; // Subtracts the count to the number
         count--;
     }
+    pthread_mutex_lock(&mutexLock1);
     std::string message = "Subtracted: " + std::to_string(number) + "\n";
     std::cout << message;
+    pthread_mutex_unlock(&mutexLock1);
+    pthread_mutex_unlock(&mutexLock2);
 
     // Without this, vscode sends an warning
     char *retval;
@@ -59,5 +69,7 @@ int main()
 
     std::string message2 = "Main Thread (After Wait): " + std::to_string(number) + "\n";
     std::cout << message2;
+    pthread_mutex_destroy(&mutexLock1); // Destroy mutex lock
+    pthread_mutex_destroy(&mutexLock2); // Destroy mutex lock
     return 0;
 }
